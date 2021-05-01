@@ -1,98 +1,139 @@
-version: "3.4"
+version: "3.7"
 
 services:
-  php:
-      build:
-        context: ../
-        dockerfile: docker/php/Dockerfile
-        args:
-          - BUILD_UID=${BUILD_UID}
-      ports:
-        - 80:80
-        - 443:443
-      links:
-        - mysql
-      volumes:
-        - ../LEAF_Nexus:/var/www/html/LEAF_Nexus
-        - ../LEAF_Request_Portal:/var/www/html/LEAF_Request_Portal
-        - ../libs:/var/www/html/libs
-        - ../test:/var/www/html/test
-      networks:
-        code-network:
-          aliases:
-            - php
-      environment:
-        - REMOTE_USER=${REMOTE_USER}
-        - APACHE_RUN_USER=build_user
+  leaf.leaf-portal:
+    image: leaf-monolith
+    container_name: leaf_app
+    env_file: 
+      - ./env_files/globals_local.env
+      - ./env_files/configs_local.env
+      - ./env_files/secrets.env
+    build:
+      context: ../
+      dockerfile: docker/php/leaf_monlith.dockerfile
+      args:
+        - BUILD_UID=${BUILD_UID}
+    ports:
+      - 770:80
+      - 773:443
+    links:
+      - mysql.leaf-portal
+    volumes:
+      - ../LEAF_Nexus:/var/www/html/LEAF_Nexus
+      - ../LEAF_Request_Portal:/var/www/html/LEAF_Request_Portal
+      - ../libs:/var/www/html/libs
+      - ../test:/var/www/html/test
+      - ./docker/php/conf.d/xdebug.ini
+    networks:
+      traefik:
+      code-network:
+        aliases:
+          - php
+    environment:
+      - REMOTE_USER=${REMOTE_USER}
+      - APACHE_RUN_USER=build_user
+    
+    labels:          
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.leaf_monolith.loadbalancer.server.port=80"
+      - "traefik.http.routers.leaf_monolith.rule=Host(`leaf.dev.vovina-tisa.net`)"
+      - "traefik.http.routers.leaf_monolith.entrypoints=web, web-secure"
+      - "traefik.http.routers.leaf_monolith.tls.certresolver=dev_http"
 
-  swagger-ui:
-    image: swaggerapi/swagger-ui
-    container_name: "swagger-ui"
+  swagger.leaf-portal:
+    image: leaf_swagger
+    container_name: leaf_swagger
+    env_file: 
+      - ./env_files/swagger_local.env      
+    build:
+      context: ../
+      dockerfile: docker/swagger/swagger.dockerfile
     ports:
       - "8081:8080" # debug only; use reverse-proxy http://localhost/swagger/
     restart: 'always'
     volumes:
       - ./swagger/nexus-swagger.json:/usr/share/nginx/html/apiapi/nexus-swagger.json
       - ./swagger/portal-swagger.json:/usr/share/nginx/html/apiapi/portal-swagger.json
-    environment:
-      - "URLS=[{ url: \"./apiapi/nexus-swagger.json\", name: \"Nexus\"   },
-              { url: \"./apiapi/portal-swagger.json\", name: \"Portal\" },
-             ]"
-      - "BASE_URL=/swagger/"
     networks:
+      traefik:
       code-network:
         aliases:
-          - swagger
-  mysql:
+          - swagger      
+
+  mysql.leaf-portal:
+    image: leaf_mysql
+    container_name: leaf_mysql
     build:
       context: ../
-      dockerfile: docker/mysql/Dockerfile
-    expose:
-      - '3306'
+      dockerfile: docker/mysql/mysql.dockerfile
+    env_file: 
+      - ./env_files/mysql_local.env
+      - ./env_files/secrets.env
     ports:
       - "3306:3306"
     restart: 'always'
-    volumes:
-      - leaf-mysql-data:/var/lib/mysql
     networks:
       code-network:
         aliases:
           - mysql
 
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_ROOT_HOST=${MYSQL_ROOT_HOST}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}
-
-  smtp:
+  smtp.leaf-portal:
     image: kurzdigital/fake-smtp # https://hub.docker.com/r/kurzdigital/fake-smtp/
-    expose:
-      - '2525'
+    container_name: leaf_smtp
+    env_file: 
+      - ./env_files/globals_local.env
     ports:
       - "2525:25" # smtp port
       - "5080:5080" # web ui port
     restart: 'always'
     networks:
+      traefik:
       code-network:
         aliases:
           - smtp
+      
+    labels:          
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.leaf_smtp.loadbalancer.server.port=5080"
+      - "traefik.http.routers.leaf_smtp.rule=Host(`smtp.dev.vovina-tisa.net`)"
+      - "traefik.http.routers.leaf_smtp.entrypoints=web, web-secure"
+      - "traefik.http.routers.leaf_smtp.tls.certresolver=dev_http"
 
-    environment:
-      - "SMTP_PORT=${SMTP_PORT}"
-      - "APP_USER=${APP_USER}" # ui login -- defaults to tester
-      - "APP_PASSWORD=${APP_PASSWORD}"
-      - "MYSQL_USER=${MYSQL_USER}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+  leaf_adminer:
+    container_name: leaf_adminer
+    image: adminer
+    ports:
+        - 3388:8080
+    networks:
+        - code-network      
+        - traefik    
+    labels:          
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.leaf_adminer.loadbalancer.server.port=8080"
+      - "traefik.http.routers.leaf_adminer.rule=Host(`leaf-adminer.dev.vovina-tisa.net`)"
+      - "traefik.http.routers.leaf_adminer.entrypoints=web, web-secure"
+      - "traefik.http.routers.leaf_adminer.tls.certresolver=dev_http"
 
-
+  leaf_whoami:
+    container_name: leaf_whoami
+    image: containous/whoami
+    networks:
+        - traefik
+    labels:          
+        - "traefik.enable=true"
+        - "traefik.http.routers.whoami-leaf.rule=Host(`whoami-leaf.dev.vovina-tisa.net`)"
+        - "traefik.http.routers.whoami-leaf.entrypoints=web, web-secure"
+        - "traefik.http.routers.whoami-leaf.tls.certresolver=dev_http"
 
 volumes:
-  leaf-mysql-data:
   leaf-php-data:
 
 
 networks:
   code-network:
     driver: bridge
+  traefik:
+      external: true
