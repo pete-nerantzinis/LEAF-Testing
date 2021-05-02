@@ -6,6 +6,7 @@ phases:
       - echo Logging into ECR
       - aws --version
       # - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-inclue-email)
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 456456143286.dkr.ecr.us-east-2.amazonaws.com
       - REPOSITORY_URI=456456143286.dkr.ecr.us-east-2.amazonaws.com/leaf-monolith
       - COMMIT_HASH=$(echo $CODEBUILD_BUILD_ID | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
