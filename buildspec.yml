@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Logging into ECR
       - aws --version
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-inclue-email)
+      # - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-inclue-email)
       - REPOSITORY_URI=456456143286.dkr.ecr.us-east-2.amazonaws.com/leaf-monolith
       - COMMIT_HASH=$(echo $CODEBUILD_BUILD_ID | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
@@ -23,5 +23,4 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - printf '[{"name":"LEAF monolith", "imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
-  artifacts:
-    files: imagedefinitions.json
+      
