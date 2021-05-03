@@ -83,6 +83,7 @@ services:
     container_name: leaf_smtp
     env_file: 
       - ./env_files/globals_local.env
+      - ./env_files/secrets.env
     ports:
       - "2525:25" # smtp port
       - "5080:5080" # web ui port
