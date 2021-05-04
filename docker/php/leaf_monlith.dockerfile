@@ -6,6 +6,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create runtime user
 ARG BUILD_UID=1000
+ENV REMOTE_USER=\\tester
 RUN useradd -u $BUILD_UID -g www-data build_user
 
 # Server installs
