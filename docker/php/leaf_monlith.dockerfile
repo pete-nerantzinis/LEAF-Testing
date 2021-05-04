@@ -17,12 +17,12 @@ RUN docker-php-ext-install zip mysqli pdo pdo_mysql gd
 COPY /docker/php/trust_ca_certs.sh /tmp/
 RUN bash -xc "bash /tmp/trust_ca_certs.sh"
 
-RUN a2enmod rewrite
-RUN a2enmod ssl
-RUN a2enmod env
-RUN a2enmod proxy
-RUN a2enmod proxy_http
-RUN a2enmod proxy_connect
+RUN a2enmod rewrite &&\
+  a2enmod ssl &&\
+  a2enmod env &&\
+  a2enmod proxy &&\
+  a2enmod proxy_http &&\
+  a2enmod proxy_connect
 
 # Self-signed cert creation and installing
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/leaf.key -out /etc/ssl/certs/leaf.pem -subj "/C=US/ST=VA/L=Chantilly/O=LEAF/OU=LEAF/CN=%"
@@ -41,7 +41,7 @@ ENV PATH /root/.composer/vendor/bin:$PATH
 # The "Expose" really doesn't do anything except to log what ports the lister is listening on.
 # Currently it _is_ listening on 80, but Traefik is routing all traffic to 443 long before it gets here.
 # Once we get to Step 2, NGinx will be retired from even production.
-# EXPOSE 80
+EXPOSE 80
 EXPOSE 443
 
 # Mail()
@@ -55,10 +55,12 @@ COPY /docker/php/swagger-proxy.conf /etc/apache2/conf-enabled/
 COPY /docker/php/000-default.conf /etc/apache2/sites-enabled/
 COPY /docker/php/default-ssl.conf /etc/apache2/sites-enabled/
 COPY /docker/php/apache2.conf /etc/apache2/
+## not sure if this is needed but...
+RUN service apache2 restart 
+
 COPY /docker/php/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
-
-
 RUN chmod +x /usr/local/bin/docker-php-entrypoint
+
 RUN chmod +x /var/www/html/
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R g+rwX /var/www
