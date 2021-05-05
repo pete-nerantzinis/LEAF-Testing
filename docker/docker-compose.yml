@@ -19,8 +19,8 @@ services:
     links:
       - mysql.leaf-portal
     volumes:
-      - ../LEAF_Nexus:/var/www/html/LEAF_Nexus
-      - ../LEAF_Request_Portal:/var/www/html/LEAF_Request_Portal
+      # - ../LEAF_Nexus:/var/www/html/LEAF_Nexus
+      # - ../LEAF_Request_Portal:/var/www/html/LEAF_Request_Portal
       - ../libs:/var/www/html/libs
       - ../test:/var/www/html/test
       - ./docker/php/conf.d/xdebug.ini

@@ -62,9 +62,6 @@ RUN service apache2 restart
 COPY /docker/php/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 RUN chmod +x /usr/local/bin/docker-php-entrypoint
 
-RUN chmod +x /var/www/html/
-RUN chown -R www-data:www-data /var/www
-RUN chmod -R g+rwX /var/www
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 # USER build_user
@@ -80,3 +77,7 @@ COPY ./LEAF_Nexus /var/www/html/LEAF_Nexus
 COPY ./LEAF_Request_Portal /var/www/html/LEAF_Request_Portal
 COPY ./libs /var/www/html/libs
 COPY ./health_checks /var/www/html/health_checks
+
+RUN chmod +x /var/www/html/
+RUN chown -R www-data:www-data /var/www
+RUN chmod -R g+rwX /var/www
