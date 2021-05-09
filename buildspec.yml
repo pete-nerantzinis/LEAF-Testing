@@ -26,6 +26,8 @@ phases:
       - cat imagedefinitions.json
       - echo Copying library files to Staging EFS
       - ls ./libs
+      - ls $CODEBUILD_LEAF_LIBS
+      - ls /mnt/efs
       # - cp ./libs $CODEBUILD_LEAF_LIBS
 artifacts:
   files: imagedefinitions.json
