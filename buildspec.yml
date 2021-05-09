@@ -25,6 +25,6 @@ phases:
       - printf '[{"name":"leaf", "imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
       - echo Copying library files to Staging EFS
-      # - cp ./libs $CODEBUILD_LEAF_LIBS
+      - cp ./libs $CODEBUILD_LEAF_LIBS
 artifacts:
   files: imagedefinitions.json
