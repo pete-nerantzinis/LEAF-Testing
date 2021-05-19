@@ -17,7 +17,7 @@ namespace Orgchart;
 
 ini_set('display_errors', 0); // Set to 1 to display errors
 
-define('UPLOAD_LOCATION', getenv('UPLOAD_LOCATION') ?: "./UPLOADS/")
+define('UPLOAD_LOCATION', getenv('UPLOAD_LOCATION') ?: "./UPLOADS/");
 
 class Config
 {
