@@ -15,6 +15,12 @@
 
 ini_set('display_errors', 0); // Set to 1 to display errors
 
+define('DATABASE_HOST',         getenv('MYSQL_ROOT_HOST', true)         ?:  getenv('DATABASE_HOST'));
+define('DATABASE_USERNAME',     getenv('MYSQL_USER', true)     ?:  getenv('DATABASE_USERNAME'));
+define('DATABASE_PASSWORD',     getenv('MYSQL_PASSWORD', true)     ?:  getenv('DATABASE_PASSWORD'));
+define('DATABASE_DB_DIRECTORY', getenv('MYSQL_DB', true) ?:  getenv('DATABASE_DB_DIRECTORY'));
+define('DATABASE_DB_ADMIN', getenv('APP_USER', true) ?:  'app_user');
+
 class DB_Config
 {
     public $dbHost = DATABASE_HOST;
@@ -59,4 +65,5 @@ class Config
     public $phonedbUser = DATABASE_USERNAME;
 
     public $phonedbPass = DATABASE_PASSWORD; 
+    
 }

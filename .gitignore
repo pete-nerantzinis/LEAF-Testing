@@ -22,11 +22,10 @@ libs/qrcode/cache/*.png
 LEAF_Nexus/UPLOADS
 LEAF_Request_Portal/UPLOADS
 
-#  Allowing adding to git specificaly for the prototype 
-# libs/dynicons/cache/*.svg
-# */templates_c/*.tpl.php
-# */admin/templates_c/*.tpl.php
-# */admin/templates_c/
+libs/dynicons/cache/*.svg
+*/templates_c/*.tpl.php
+*/admin/templates_c/*.tpl.php
+*/admin/templates_c/
 
 # Part of the update to stateless.  No data contained in these,just pointers to environmental variables
 # db_config.php

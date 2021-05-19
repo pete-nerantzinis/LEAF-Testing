@@ -14,8 +14,8 @@ services:
       args:
         - BUILD_UID=${BUILD_UID}
     ports:
-      - 770:80
-      - 773:443
+      - 80:80
+      - 443:443
     links:
       - mysql.leaf-portal
     volumes:
@@ -117,17 +117,6 @@ services:
       - "traefik.http.routers.leaf_adminer.rule=Host(`leaf-adminer.dev.vovina-tisa.net`)"
       - "traefik.http.routers.leaf_adminer.entrypoints=web, web-secure"
       - "traefik.http.routers.leaf_adminer.tls.certresolver=dev_http"
-
-  leaf_whoami:
-    container_name: leaf_whoami
-    image: containous/whoami
-    networks:
-        - traefik
-    labels:          
-        - "traefik.enable=true"
-        - "traefik.http.routers.whoami-leaf.rule=Host(`whoami-leaf.dev.vovina-tisa.net`)"
-        - "traefik.http.routers.whoami-leaf.entrypoints=web, web-secure"
-        - "traefik.http.routers.whoami-leaf.tls.certresolver=dev_http"
 
 volumes:
   leaf-php-data:
