@@ -13,6 +13,7 @@ services:
       dockerfile: docker/php/leaf_monlith.dockerfile
       args:
         - BUILD_UID=${BUILD_UID}
+        - SMTP_HOST=smtp.leaf-portal
     ports:
       - 80:80
       - 443:443

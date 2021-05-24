@@ -1,5 +1,11 @@
 FROM pelentan/leaf-app-base:1.0 as base
 
+ARG SMTP_HOST 
+
+RUN sed -i  "s/LEAF_EMAIL_SERVER/$SMTP_HOST/g" /etc/ssmtp/ssmtp.conf
+#temp to just make sure it's working
+RUN sed -i  "s/localhost/$SMTP_HOST/g" /etc/ssmtp/ssmtp.conf
+
 FROM base as dev 
 # xdebug
 RUN pecl config-set php_ini "$PHP_INI_DIR/php.ini"

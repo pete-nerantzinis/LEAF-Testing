@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
 
-# printf '\n\nRunning sql scripts...'
+printf '\n\nRunning sql scripts...'
 
-# mysql -uroot -p$MYSQL_ROOT_PASSWORD <<CREATE_DATABASE
-# CREATE DATABASE leaf_users;
-# CREATE DATABASE leaf_portal;
-# CREATE DATABASE nexus_testing;
-# CREATE DATABASE portal_testing;
-# CREATE_DATABASE
+# mysql -uroot -p$MYSQL_ROOT_PASSWORD <<Set_Server_Defaults
+# SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+# Set_Server_Defaults
+
+
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD <<GRANT_PRIVILEGES
 # GRANT ALL PRIVILEGES ON *.* TO 'tester'@'%' IDENTIFIED BY 'tester';
 # GRANT_PRIVILEGES
