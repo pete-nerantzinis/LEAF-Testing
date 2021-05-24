@@ -14,7 +14,7 @@ phases:
     commands:
       - echo Build start `date`
       - echo Building image
-      - docker build --target=prod --build-arg BUILD_UID=1000 --build-arg REMOTE_USER=\\tester -t $REPOSITORY_URI:latest -f ./docker/php/leaf_monlith.dockerfile .
+      - docker build --target=prod --build-arg BUILD_UID=1000 --build-arg REMOTE_USER=\\tester --build-arg SMTP_HOST=smtp.leaf-portal -t $REPOSITORY_URI:latest -f ./docker/php/leaf_monlith.dockerfile .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
