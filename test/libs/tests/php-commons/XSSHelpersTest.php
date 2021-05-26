@@ -7,48 +7,47 @@ declare(strict_types = 1);
 
 if (!class_exists('XSSHelpers'))
 {
-    include '../../libs/php-commons/XSSHelpers.php';
+    include __DIR__.'/../../../../libs/php-commons/XSSHelpers.php';
 }
 
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests libs/php-commons/XSSHelpers.php
+ * @covers \XSSHelpers
  */
 final class XSSHelpersTest extends TestCase
 {
     /**
-     * Tests XSSHelpers::sanitizer($in, $allowedTags)
-     *
-     * Tests sanitizing HTML with anchor elements.
+     *  @covers \XSSHelpers::sanitizer
+     *  Tests sanitizing HTML with anchor elements.
      */
     public function testSanitizer_links() : void
     {
-        $in1 = "<a href='http://google.com'>Google</a>";
+        $in1 = "<a href='https://google.com'>Google</a>";
         $in2 = "<a href='#' onclick='alert(\"gotcha\")'>Hello</a>";
 
         $this->assertEquals(
-            '&lt;a href=&#039;http://google.com&#039;&gt;Google</a>',
+            '<a href="https://google.com" target="_blank">Google</a>',
             XSSHelpers::sanitizer($in1, array('a'))
         );
         $this->assertEquals(
-            '&lt;a href=&#039;#&#039; onclick=&#039;alert(&quot;gotcha&quot;)&#039;&gt;Hello</a>',
+            '<a href="#" target="_blank">Hello</a>',
             XSSHelpers::sanitizer($in2, array('a'))
         );
 
         $this->assertEquals(
-            '&lt;a href=&#039;#&#039; onclick=&#039;alert(&quot;gotcha&quot;)&#039;&gt;Hello&lt;/a&gt;',
+            '&lt;a href=\'#\' onclick=\'alert("gotcha")\'&gt;Hello&lt;/a&gt;',
             XSSHelpers::sanitizer($in2, array())
         );
         $this->assertEquals(
-            '&lt;a href=&#039;http://google.com&#039;&gt;Google&lt;/a&gt;',
+            '&lt;a href=\'https://google.com\'&gt;Google&lt;/a&gt;',
             XSSHelpers::sanitizer($in1, array(''))
         );
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
-     *
+     * @covers \XSSHelpers::sanitizeHTML
      * Tests processing line breaks (\n, \r) within the HTML input
      */
     public function testSanitizeHTML_LineBreaks() : void
@@ -59,31 +58,21 @@ final class XSSHelpersTest extends TestCase
         $linebreaks4 = "text\n\rwith\n\rbreaks";
         $linebreaks5 = "text\n\nwith\n\nbreaks";
 
-        $expectedOutput = 'text<br>with<br>breaks';
-        $expectedOutput2 = 'text<br><br>with<br><br>breaks';
+        $expectedOutput  = "text<br />\nwith<br />\nbreaks";
+        $expectedOutput2 = "text<br />\rwith<br />\rbreaks";
+        $expectedOutput3 = "text<br />\r\nwith<br />\r\nbreaks";
+        $expectedOutput4 = "text<br />\n\rwith<br />\n\rbreaks";
+        $expectedOutput5 = "text<br /><br />\nwith<br /><br />\nbreaks";
 
         $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($linebreaks));
-        $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($linebreaks2));
-        $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($linebreaks3));
-        $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($linebreaks4));
-
-        $this->assertEquals($expectedOutput2, XSSHelpers::sanitizeHTML($linebreaks5));
+        $this->assertEquals($expectedOutput2, XSSHelpers::sanitizeHTML($linebreaks2));
+        $this->assertEquals($expectedOutput3, XSSHelpers::sanitizeHTML($linebreaks3));
+        $this->assertEquals($expectedOutput4, XSSHelpers::sanitizeHTML($linebreaks4));
+        $this->assertEquals($expectedOutput5, XSSHelpers::sanitizeHTML($linebreaks5));
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
-     *
-     * Tests processing line breaks (\n, \r) in a paragraph (<p>) within the HTML input
-     */
-    public function testSanitizeHTML_LineBreaks_Paragraphs() : void
-    {
-        $str1 = "<p>text\nwith\nbreaks\nin\nparagraph</p>";
-        $out1 = '<p>textwithbreaksinparagraph</p>';
-        $this->assertEquals($out1, XSSHelpers::sanitizeHTML($str1));
-    }
-
-    /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests the length of the HTML input
      */
@@ -101,7 +90,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests Ordered Lists within the HTML input
      */
@@ -114,7 +103,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests scrubbing SSNs
      */
@@ -131,7 +120,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests Tables within the HTML input
      */
@@ -144,7 +133,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests formatting tabs (<b><i><u>) within the HTML input
      */
@@ -157,7 +146,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests any unclosed element tags within the HTML input
      */
@@ -170,7 +159,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
+     * @covers \XSSHelpers::sanitizeHTML
      *
      * Tests any unclosed inner element tags within the HTML input
      */
@@ -183,20 +172,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::sanitizeHTML()
-     *
-     * Tests Unordered Lists within the HTML input
-     */
-    public function testSanitizeHTML_UL() : void
-    {
-        $str1 = '<ul><li>an</li><li>unordered</li><li>list</li></ul>';
-        $out1 = '&lt;ul&gt;<li>an</li><li>unordered</li><li>list</li>&lt;/ul&gt;';
-
-        $this->assertEquals($out1, XSSHelpers::sanitizeHTML($str1));
-    }
-
-    /**
-     * Tests XSSHelpers::sanitizeHTMLRich()
+     * @covers \XSSHelpers::sanitizeHTMLRich
      *
      * Tests processing images within the HTML input
      */
@@ -210,36 +186,25 @@ final class XSSHelpersTest extends TestCase
         $img6 = '<img src="hello.jpg" alt="world" />';
         $img7 = '<img src="javascript:alert(\'hello.jpg\')">';
 
-        $expectedOutput = '<img src="hello.jpg" alt="" />"';
-        $expectedOutput2 = '<img src="hello.jpg" alt="world" />"';
-        $expectedOutput3 = '&lt;img src=&quot;javascript:alert(&#039;hello.jpg&#039;)&quot;&gt;';
+        $expectedOutput = '&lt;img src="hello.jpg"&gt;';
+        $expectedOutput2 = '&lt;img src="hello.jpg"/&gt;';
+        $expectedOutput3 = '&lt;img src="hello.jpg" /&gt;';
+        $expectedOutput4 = '&lt;img src="hello.jpg" alt="world"&gt;';
+        $expectedOutput5 = '&lt;img src="hello.jpg" alt="world"/&gt;';
+        $expectedOutput6 = '&lt;img src="hello.jpg" alt="world" /&gt;';
+        $expectedOutput7 = '&lt;img src="javascript:alert(\'hello.jpg\')"&gt;';
 
         $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($img));
-        $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($img2));
-        $this->assertEquals($expectedOutput, XSSHelpers::sanitizeHTML($img3));
-
-        $this->assertEquals($expectedOutput2, XSSHelpers::sanitizeHTML($img4));
-        $this->assertEquals($expectedOutput2, XSSHelpers::sanitizeHTML($img5));
-        $this->assertEquals($expectedOutput2, XSSHelpers::sanitizeHTML($img6));
-
-        $this->assertEquals($expectedOutput3, XSSHelpers::sanitizeHTML($img7));
+        $this->assertEquals($expectedOutput2, XSSHelpers::sanitizeHTML($img2));
+        $this->assertEquals($expectedOutput3, XSSHelpers::sanitizeHTML($img3));
+        $this->assertEquals($expectedOutput4, XSSHelpers::sanitizeHTML($img4));
+        $this->assertEquals($expectedOutput5, XSSHelpers::sanitizeHTML($img5));
+        $this->assertEquals($expectedOutput6, XSSHelpers::sanitizeHTML($img6));
+        $this->assertEquals($expectedOutput7, XSSHelpers::sanitizeHTML($img7));
     }
 
     /**
-     * Tests XSSHelpers::xscrub()
-     *
-     * Tests escaping HTML tags
-     */
-    public function testXscrub_tags() : void
-    {
-        $str1 = '<table><tr><td></td></tr></table>';
-        $out1 = '&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;';
-
-        $this->assertEquals($out1, XSSHelpers::xscrub($str1));
-    }
-
-    /**
-     * Tests XSSHelpers::xscrub()
+     * @covers \XSSHelpers::xscrub
      *
      * Tests escaping HTML tags
      */
@@ -252,7 +217,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::scrubNewLinesFromURL()
+     * @covers \XSSHelpers::scrubNewLinesFromURL
      *
      * Tests scrubbing newline characters from URL
      */
@@ -293,7 +258,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::scrubFilename()
+     * @covers XSSHelpers::scrubFilename
      *
      * Tests scrubbing bad characters from filename
      */
@@ -357,7 +322,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * Tests XSSHelpers::scrubObject()
+     * @covers \XSSHelpers::scrubObject
      *
      * Tests escaping everything in an object or array
      */

@@ -22,30 +22,11 @@ use Symfony\Component\Console\Output\NullOutput;
 class DatabaseTest extends TestCase
 {
     /**
-     * Populates the database with any default data from a fresh install.
-     * It does not tear down and rebuild the database, just inserts data.
-     */
-    public function initialSeed() : void
-    {
-        $this->runPhinxCmd('seed:run -s InitialSeed');
-    }
-
-    /**
      * Truncates all tables, seeds with initial data, seeds with base test data.
      */
     public function resetDatabase() : void
     {
-        $this->truncateTables();
-        $this->initialSeed();
-        $this->seedBaseTestData();
-    }
 
-    /**
-     * Seed the database with a base set of data to test against.
-     */
-    public function seedBaseTestData() : void
-    {
-        $this->runPhinxCmd('seed:run -s BaseTestSeed');
     }
 
     /**
@@ -53,13 +34,6 @@ class DatabaseTest extends TestCase
      */
     public function truncateTables() : void
     {
-        $this->runPhinxCmd('seed:run -s TruncateTables');
-    }
 
-    private function runPhinxCmd($cmd) : void
-    {
-        $app = new PhinxApplication();
-        $app->setAutoExit(false);
-        $app->run(new StringInput($cmd), new NullOutput());
     }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schdema.phpunit.de/7.5/phpunit.xsd"
+         bootstrap="bootstrap.php"
+         forceCoversAnnotation="true"
+         beStrictAboutCoversAnnotation="true"
+         beStrictAboutOutputDuringTests="true"
+         verbose="true"
+         colors="true"
+         convertWarningsToExceptions="true">
+    <php>
+        <server name="NEXUS_DB_HOST" value="mysql" />
+        <server name="NEXUS_DB_NAME" value="test_nexus_name" />
+        <server name="NEXUS_DB_USER" value="test_nexus_user" />
+        <server name="NEXUS_DB_PASS" value="test_nexus_pass" />
+
+        <server name="PORTAL_DB_HOST" value="mysql" />
+        <server name="PORTAL_DB_NAME" value="test_portal_name" />
+        <server name="PORTAL_DB_USER" value="test_portal_user" />
+        <server name="PORTAL_DB_PASS" value="test_portal_pass" />
+    </php>
+    <testsuites>
+        <testsuite name="all-tests">
+            <directory phpVersion="7.3.5" phpVersionOperator=">=">.</directory>
+            <exclude>vendor</exclude>
+            <exclude>prepend/vendor</exclude>
+        </testsuite>
+        <testsuite name="nexus">
+            <directory phpVersion="7.3.5" phpVersionOperator=">=">LEAF_Nexus_Tests/tests</directory>
+        </testsuite>
+        <testsuite name="leaf">
+            <directory phpVersion="7.3.5" phpVersionOperator=">=">LEAF_Request_Portal_Tests/tests</directory>
+        </testsuite>
+        <testsuite name="api-endpoints">
+            <directory phpVersion="7.3.5" phpVersionOperator=">=">LEAF_test_endpoints</directory>
+        </testsuite>
+    </testsuites>
+    <coverage cacheDirectory="cache">
+        <include>
+            <directory suffix=".php" phpVersion="7.3.5" phpVersionOperator=">=">../LEAF_Nexus</directory>
+            <directory suffix=".php" phpVersion="7.3.5" phpVersionOperator=">=">../LEAF_Request_Portal</directory>
+        </include>
+        <exclude>
+            <directory>../LEAF_Nexus/templates_c</directory>
+            <directory>../LEAF_Request_Portal/templates_c</directory>
+        </exclude>
+        <report>
+            <html outputDirectory="profile_output/html" lowUpperBound="50" highLowerBound="90"/>
+            <php outputFile="profile_output/php/index.php"/>
+            <text outputFile="profile_output/coverage.txt"
+                  showUncoveredFiles="false" showOnlySummary="true"/>
+        </report>
+    </coverage>
+</phpunit>

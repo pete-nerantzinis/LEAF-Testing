@@ -13,6 +13,7 @@ class XSSHelpers
         '/(\<p\>\<\/p\>){2,}/', // flatten extra <p>
         '/\<\/p\>(\s+)?\<br\>(\s+)?\<p\>/U', // scrub line breaks between paragraphs
         '/(<br \/?><br \/?><br \/?>)+/', // scrub excess linebreaks
+        '/((?!666|000)[0-8][0-9\_]{2}\-(?!00)[0-9\_]{2}\-(?!0000)[0-9\_]{4})/' // SSN numbers
     );
 
     private static $specialReplace = array(
@@ -20,6 +21,7 @@ class XSSHelpers
         '',
         "</p>\n<p>",
         '<br />',
+       '###-##-####'
     );
 
     /**
@@ -166,70 +168,30 @@ class XSSHelpers
                     break;
             }
         }
-        while ($in != html_entity_decode($in, ENT_QUOTES | ENT_HTML5, $encoding))
-        {
+        while ($in != html_entity_decode($in, ENT_QUOTES | ENT_HTML5, $encoding)) {
             $in = html_entity_decode($in, ENT_QUOTES | ENT_HTML5, $encoding);
         }
         $in = preg_replace(self::$specialPattern, self::$specialReplace, $in); // modifiers to support features
 
         $in = preg_replace($pattern, $replace, htmlspecialchars($in, ENT_QUOTES, $encoding));
 
-        // verify tag grammar
-        $matches = array();
-        preg_match_all('/\<(\/)?([A-Za-z]+)(\s.+)?\>/U', $in, $matches, PREG_PATTERN_ORDER);
-        $openTags = array();
-        $numTags = count($matches[2]);
-        for ($i = 0; $i < $numTags; $i++)
-        {
-            if ($matches[2][$i] != 'br'
-                && $matches[2][$i] != 'img'
-                && $matches[2][$i] != 'col')
-            {
-                //echo "examining: {$matches[1][$i]}{$matches[2][$i]}\n";
-                // proper closure
-                if ($matches[1][$i] == '/' && isset($openTags[$matches[2][$i]]) && $openTags[$matches[2][$i]] > 0)
-                {
-                    $openTags[$matches[2][$i]]--;
-                // echo "proper\n";
-                }
-                // new open tag
-                else
-                {
-                    if ($matches[1][$i] == '')
-                    {
-                        if (!isset($openTags[$matches[2][$i]]))
-                        {
-                            $openTags[$matches[2][$i]] = 0;
-                        }
-                        $openTags[$matches[2][$i]]++;
-                    // echo "open\n";
-                    }
-                    // improper closure
-                    else
-                    {
-                        if ($matches[1][$i] == '/' && isset($openTags[$matches[2][$i]]) || $openTags[$matches[2][$i]] <= 0)
-                        {
-                            $in = '<' . $matches[2][$i] . '>' . $in;
-                            $openTags[$matches[2][$i]]--;
-                            // echo "improper\n";
-                        }
-                    }
-                }
-                // print_r($openTags);
-            }
-        }
+        libxml_use_internal_errors(true);
 
-        // close tags
-        $tags = array_reverse(array_keys($openTags));
-        foreach ($tags as $tag)
-        {
-            while ($openTags[$tag] > 0)
-            {
-                $in = $in . '</' . $tag . '>';
-                $openTags[$tag]--;
-            }
-        }
+        $dom = new DOMDocument();
+        $dom->loadHTML($in);
 
+        // Strip wrapping <html> and <body> tags
+        $mock = new DOMDocument();
+        $body = $dom->getElementsByTagName('body')->item(0);
+        foreach ($body->childNodes as $child) {
+            $mock->appendChild($mock->importNode($child, true));
+        }
+        // Trim output and remove beginning and ending <p> tags inserted by DOMDocument (if there)
+        $in = trim($mock->saveHTML());
+        $in = preg_replace('/^\<p\>/', '', $in);
+        $in = preg_replace('/\<\/p\>$/', '', $in);
+        $in = str_replace('<br>', '<br />', $in);
+        $in = str_replace('<hr>', '<hr />', $in);
         return $in;
     }
 

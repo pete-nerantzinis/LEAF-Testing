@@ -1,5 +1,7 @@
 vendor
-LEAF_Nexus_Tests/phinx.yml
-LEAF_Request_Portal_Tests/phinx.yml
-LEAF_Request_Portal_Tests/run_tests_windows.sh
-LEAF_Nexus_Tests/run_tests_windows.sh
+../test-old/LEAF_Request_Portal_Tests/run_tests_windows.sh
+../test-old/LEAF_Nexus_Tests/run_tests_windows.sh
+/.phpunit.result.cache
+phpunit.xml
+globals.php
+db_config.php
