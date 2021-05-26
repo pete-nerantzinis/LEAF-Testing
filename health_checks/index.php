@@ -1,10 +1,25 @@
 pong
 
 <br/><br/><br/>****** Anything this line and down better be gone before this gets to production!!! *********
- ping <br/> Have / going here temporarily.<br/><br/>
+<br/>ping <br/> Have / going here temporarily.<br/><br/>
 
 
 <?php
 echo "<br/><br/>Toga<br/><br/>";
-echo readfile("/etc/ssmtp/ssmtp.conf")
+echo "This server's ip is: {$_SERVER['SERVER_ADDR']}"
+
+echo "<br/><br/>Checking files on the EFS"
+
+$dir = "/var/www/html/toga";
+
+// Open a directory, and read its contents
+if (is_dir($dir)){
+    echo "It be mounted anyway! <br/>"
+  if ($dh = opendir($dir)){
+    while (($file = readdir($dh)) !== false){
+      echo "filename:" . $file . "<br/>";
+    }
+    closedir($dh);
+  }
+}
 ?>
