@@ -129,7 +129,11 @@ final class XSSHelpersTest extends TestCase
         $str1 = '<table><tr><td></td></tr></table>';
         $out1 = '<table class="table"><tr><td></td></tr></table>';
 
+        $str2 = '<p><span></p></span>';
+        $out2 = '<p><span></span></p>';
+
         $this->assertEquals($out1, XSSHelpers::sanitizeHTML($str1));
+        $this->assertEquals($out2, XSSHelpers::sanitizeHTML($str2));
     }
 
     /**
@@ -322,7 +326,7 @@ final class XSSHelpersTest extends TestCase
     }
 
     /**
-     * @covers \XSSHelpers::scrubObject
+     * @covers \XSSHelpers
      *
      * Tests escaping everything in an object or array
      */

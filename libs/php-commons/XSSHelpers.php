@@ -61,7 +61,14 @@ class XSSHelpers
      */
     public static function sanitizer($in, $allowedTags = array(), $encoding = 'UTF-8')
     {
+        $hasPTagStart = false;
         $errorReportingLevel = error_reporting(E_ALL ^ E_WARNING);//turn off errors for the next few lines
+
+        // check if starts with <p> so we don't remove later when matching tags
+        if (strpos($in, "<p>") === 0) {
+            $hasPTagStart = true;
+        }
+
         // replace linebreaks with <br /> if there's no html <p>'s
         if (strpos($in, '<p>') === false
             && strpos($in, '<table') === false)
@@ -186,12 +193,16 @@ class XSSHelpers
         foreach ($body->childNodes as $child) {
             $mock->appendChild($mock->importNode($child, true));
         }
-        // Trim output and remove beginning and ending <p> tags inserted by DOMDocument (if there)
+        // Trim output and remove beginning and ending <p> tags
+        // inserted by DOMDocument (if not already there in string)
         $in = trim($mock->saveHTML());
-        $in = preg_replace('/^\<p\>/', '', $in);
-        $in = preg_replace('/\<\/p\>$/', '', $in);
+        if (!$hasPTagStart) {
+            $in = preg_replace('/^\<p\>/', '', $in);
+            $in = preg_replace('/\<\/p\>$/', '', $in);
+        }
         $in = str_replace('<br>', '<br />', $in);
         $in = str_replace('<hr>', '<hr />', $in);
+
         return $in;
     }
 
