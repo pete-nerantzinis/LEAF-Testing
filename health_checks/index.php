@@ -6,7 +6,7 @@ pong
 
 <?php
 echo "<br/><br/>Toga<br/><br/>";
-echo "This server's ip is: {$_SERVER['SERVER_ADDR']}"
+echo "This server's ip is: {$_SERVER['SERVER_ADDR']}";
 
 echo "<br/><br/>Checking files on the EFS";
 
