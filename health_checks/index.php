@@ -5,6 +5,7 @@ pong
 
 
 <?php
+exec('chown -R www-data:www-data /var/www')
 echo "<br/><br/>Toga<br/><br/>";
 echo "This server's ip is: {$_SERVER['SERVER_ADDR']}";
 
