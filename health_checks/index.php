@@ -6,6 +6,7 @@ pong
 
 <?php
 exec('chown -R www-data:www-data /var/www');
+exec('chmod -R 775 /var/www/html/LEAF_Request_Portal/files/')
 echo "<br/><br/>Toga <br/><br/>";
 echo "This server's ip is: {$_SERVER['SERVER_ADDR']}";
 
