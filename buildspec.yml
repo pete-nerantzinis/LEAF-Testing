@@ -24,9 +24,5 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - printf '[{"name":"leaf", "imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
-      - echo Copying library files to Staging EFS
-      - ls ./libs
-      - cp -R ./libs $CODEBUILD_LEAF_LIBS
-      - ls $CODEBUILD_LEAF_LIBS/libs
 artifacts:
   files: imagedefinitions.json
