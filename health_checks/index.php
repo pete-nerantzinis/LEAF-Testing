@@ -23,28 +23,28 @@ if (is_dir($dir)){
     closedir($dh);
   }
 }
-// $dir = "/var/www/html/LEAF_Request_Portal/templates_c";
+$dir = "/var/www/html/LEAF_Request_Portal/templates_c";
 
-// // Open a directory, and read its contents
-// if (is_dir($dir)){
-//     echo "It be mounted anyway! <br/>";
-//   if ($dh = opendir($dir)){
-//     while (($file = readdir($dh)) !== false){
-//       echo "filename:" . $file . "<br>";
-//     }
-//     closedir($dh);
-//   }
-// }
-// $dir = "/var/www/html/LEAF_Request_Portal/files";
+// Open a directory, and read its contents
+if (is_dir($dir)){
+    echo "It be mounted anyway! <br/>";
+  if ($dh = opendir($dir)){
+    while (($file = readdir($dh)) !== false){
+      echo "filename:" . $file . "<br>";
+    }
+    closedir($dh);
+  }
+}
+$dir = "/var/www/html/LEAF_Request_Portal/files";
 
-// // Open a directory, and read its contents
-// if (is_dir($dir)){
-//     echo "It be mounted anyway! <br/>";
-//   if ($dh = opendir($dir)){
-//     while (($file = readdir($dh)) !== false){
-//       echo "filename:" . $file . "<br>";
-//     }
-//     closedir($dh);
-//   }
-// }
+// Open a directory, and read its contents
+if (is_dir($dir)){
+    echo "It be mounted anyway! <br/>";
+  if ($dh = opendir($dir)){
+    while (($file = readdir($dh)) !== false){
+      echo "filename:" . $file . "<br>";
+    }
+    closedir($dh);
+  }
+}
 ?>
