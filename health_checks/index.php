@@ -6,7 +6,7 @@ pong
 
 <?php
 // exec('chown -R www-data:www-data /var/www')
-echo "<br/><br/>Toga<br/><br/>";
+echo "<br/><br/>Toga bright lights<br/><br/>";
 echo "This server's ip is: {$_SERVER['SERVER_ADDR']}";
 
 echo "<br/><br/>Checking files on the EFS";
