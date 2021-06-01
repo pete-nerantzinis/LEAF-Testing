@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: php-actions/composer@v5
-      - uses: guzzlehttp/guzzle@7.3
+      - uses: guzzlehttp/guzzle^7.0
 
       - name: PHPUnit Nexus tests
-        uses: phpunit/phpunit@9.5.4
+        uses: phpunit/phpunit^9.3
         env:
           TEST_NAME: Gizmo
         with:
@@ -28,10 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: php-actions/composer@v5
-      - uses: guzzlehttp/guzzle@7.3
+      - uses: guzzlehttp/guzzle^7.3
 
       - name: PHPUnit Portal tests
-        uses: phpunit/phpunit@9.5.4
+        uses: phpunit/phpunit^9.3
         env:
           TEST_NAME: Stripe
         with:
