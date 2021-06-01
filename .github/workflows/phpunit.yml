@@ -31,10 +31,10 @@ jobs:
       - uses: guzzlehttp/guzzle@7.3
 
       - name: PHPUnit Portal tests
-          uses: phpunit/phpunit@9.5.4
-          env:
-            TEST_NAME: Stripe
-          with:
-            bootstrap: test/bootstrap.php
-            configuration: test/phpunit.xml
-            args: --colors --testsuite "leaf"
+        uses: phpunit/phpunit@9.5.4
+        env:
+          TEST_NAME: Stripe
+        with:
+          bootstrap: test/bootstrap.php
+          configuration: test/phpunit.xml
+          args: --colors --testsuite "leaf"
