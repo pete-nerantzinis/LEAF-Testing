@@ -43,9 +43,9 @@ RUN apt-get install -y ssmtp && \
   echo 'sendmail_path = "/usr/sbin/ssmtp -t"' > /usr/local/etc/php/conf.d/mail.ini
 
 # xdebug
-RUN pecl config-set php_ini "$PHP_INI_DIR/php.ini" && yes | pecl install xdebug
+RUN pecl config-set php_ini "$PHP_INI_DIR/php.ini"
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 COPY /docker/php/etc/xdebug.ini "$PHP_INI_DIR/conf.d/xdebug.ini"
-
 
 COPY /docker/php/ssmtp/ssmtp.conf /etc/ssmtp/
 COPY /docker/php/swagger-proxy.conf /etc/apache2/conf-enabled/

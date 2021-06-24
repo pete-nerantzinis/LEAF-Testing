@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-include '../../libs/php-commons/spreadsheet/SpreadsheetUtil.php';
+include __DIR__.'/../../../../../libs/php-commons/spreadsheet/SpreadsheetUtil.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -11,10 +11,11 @@ use PHPUnit\Framework\TestCase;
  */
 final class SpreadsheetUtilTest extends TestCase
 {
-    var $fileName = __DIR__ . DIRECTORY_SEPARATOR . "import_test.xlsx";
+    var $fileName = __DIR__ . DIRECTORY_SEPARATOR;
 
     /**
      * Tests SpreadsheetUtil::loadFile($fileName)
+     * @covers \SpreadsheetUtil::loadFile
      */
     public function testLoadFile() : void
     {
@@ -43,7 +44,7 @@ final class SpreadsheetUtilTest extends TestCase
 
     /**
      * Tests SpreadsheetUtil::loadFile($fileName)
-     * 
+     * @covers \SpreadsheetUtil::loadFile
      * Tests with an invalid file name
      */
     public function testLoadFile_invalidFileName() : void
@@ -54,6 +55,7 @@ final class SpreadsheetUtilTest extends TestCase
 
     /**
      * Tests SpreadsheetUtil::loadFileIntoArray($filename, $hasHeaders)
+     * @covers SpreadsheetUtil::loadFileIntoArray
      */
     public function testLoadFileIntoArray() : void
     {

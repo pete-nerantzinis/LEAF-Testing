@@ -5,4 +5,4 @@
 
 require 'vendor/autoload.php';
 
-set_include_path('../');
+set_include_path(__DIR__ .'/../');
